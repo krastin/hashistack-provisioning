@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
 
-PRODUCT=consul
+# Variables:
+# VAULT_VERSION
 
 # get last OSS version if CONSUL_VERSION not set
 if [ ! "$CONSUL_VERSION" ] ; then
-  CONSUL_VERSION=`curl -sL https://releases.hashicorp.com/${PRODUCT}/index.json | jq -r '.versions[].version' | sort -V | egrep -v 'ent|beta|rc|alpha' | tail -1`
+  CONSUL_VERSION=`curl -sL https://releases.hashicorp.com/consul/index.json | jq -r '.versions[].version' | sort -V | egrep -v 'ent|beta|rc|alpha' | tail -1`
 fi
 
 # Working directory
 cd /tmp
 
-which ${PRODUCT} || {
-  wget https://releases.hashicorp.com/${PRODUCT}/${CONSUL_VERSION}/${PRODUCT}_${CONSUL_VERSION}_linux_amd64.zip
-  unzip ${PRODUCT}_${CONSUL_VERSION}_linux_amd64.zip
-  sudo mv ${PRODUCT} /usr/local/bin
-  rm ${PRODUCT}_${CONSUL_VERSION}_linux_amd64.zip
+which consul || {
+  wget https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip
+  unzip consul_${CONSUL_VERSION}_linux_amd64.zip
+  sudo mv consul /usr/local/bin
+  rm consul_${CONSUL_VERSION}_linux_amd64.zip
 }
 
 # Set up config directory
@@ -32,7 +33,7 @@ Description="HashiCorp Consul - A service mesh solution"
 Documentation=https://www.consul.io/
 Requires=network-online.target
 After=network-online.target
-#ConditionFileNotEmpty=/etc/consul.d/consul.hcl
+ConditionDirectoryNotEmpty=/etc/consul.d/
 
 [Service]
 User=consul

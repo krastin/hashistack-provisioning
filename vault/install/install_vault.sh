@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
 
-PRODUCT=vault
+# Variables:
+# VAULT_VERSION
 
 # get last OSS version if VAULT_VERSION not set
 if [ ! "$VAULT_VERSION" ] ; then
-  VAULT_VERSION=`curl -sL https://releases.hashicorp.com/${PRODUCT}/index.json | jq -r '.versions[].version' | sort -V | egrep -v 'ent|beta|rc|alpha' | tail -1`
+  VAULT_VERSION=`curl -sL https://releases.hashicorp.com/vault/index.json | jq -r '.versions[].version' | sort -V | egrep -v 'ent|beta|rc|alpha' | tail -1`
 fi
 
 # Working directory
 cd /tmp
 
-which ${PRODUCT} || {
-  wget https://releases.hashicorp.com/${PRODUCT}/${VAULT_VERSION}/${PRODUCT}_${VAULT_VERSION}_linux_amd64.zip
-  unzip ${PRODUCT}_${VAULT_VERSION}_linux_amd64.zip
-  sudo mv ${PRODUCT} /usr/local/bin
-  rm ${PRODUCT}_${VAULT_VERSION}_linux_amd64.zip
+which vault || {
+  wget https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
+  unzip vault_${VAULT_VERSION}_linux_amd64.zip
+  sudo mv vault /usr/local/bin
+  rm vault_${VAULT_VERSION}_linux_amd64.zip
 }
 
 # Set up config directory
@@ -32,7 +33,7 @@ Description="HashiCorp Vault - A tool for managing secrets"
 Documentation=https://www.vaultproject.io/docs/
 Requires=network-online.target
 After=network-online.target
-ConditionFileNotEmpty=/etc/vault.d/vault.hcl
+ConditionDirectoryNotEmpty=/etc/vault.d/vault.hcl
 StartLimitIntervalSec=60
 StartLimitBurst=3
 
@@ -48,7 +49,7 @@ AmbientCapabilities=CAP_IPC_LOCK
 Capabilities=CAP_IPC_LOCK+ep
 CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
 NoNewPrivileges=yes
-ExecStart=/usr/local/bin/vault server -config=/etc/vault.d/vault.hcl
+ExecStart=/usr/local/bin/vault server -config=/etc/vault.d/
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 KillSignal=SIGINT
