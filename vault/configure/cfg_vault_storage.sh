@@ -29,6 +29,7 @@ else
     cat <<EOF >/etc/vault.d/storage.hcl
 storage "raft" {
   path    = "/var/raft/"
-  node_id = "${NODEID}"
+  node_id = "$(hostname)"
 }
 EOF
+fi
