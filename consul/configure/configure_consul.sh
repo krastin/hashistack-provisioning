@@ -7,6 +7,7 @@
 # $ACCESS_KEY_ID
 # $SECRET_ACCESS_KEY
 # $CLUSTER
+# $LOCAL_IP
 
 # Set up basic consul settings
 if [ ! -z "$NODE_NAME" ]
@@ -21,6 +22,16 @@ sudo cat <<EOF >/etc/consul.d/basic_config.json
   "enable_debug": true
 }
 EOF
+
+# Set up IP to bind to
+if [ ! -z "$LOCAL_IP" ]
+sudo cat <<EOF >/etc/consul.d/bind_ip.json
+{
+  "bind_addr": "${LOCAL_IP}",
+  "client_addr": "127.0.0.1 ${LOCAL_IP}"
+}
+EOF
+fi
 
 if [ "$SERVER" == "true" ]; then
   # setup server settings
