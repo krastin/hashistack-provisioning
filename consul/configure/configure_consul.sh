@@ -54,7 +54,7 @@ fi
 if [ ! -z "$RETRYIPS" ]; then
   sudo cat <<EOF >/etc/consul.d/retry_join.json
 {
-  "retry_join": ${RETRYIPS}
+  "retry_join": [ "${RETRYIPS}" ]
 }
 EOF
 fi
