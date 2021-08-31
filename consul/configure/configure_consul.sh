@@ -24,7 +24,7 @@ sudo cat <<EOF >/etc/consul.d/basic_config.json
 EOF
 
 # Set up IP to bind to
-if [ ! -z "$LOCAL_IP" ]
+if [ ! -z "$LOCAL_IP" ]; then
 sudo cat <<EOF >/etc/consul.d/bind_ip.json
 {
   "bind_addr": "${LOCAL_IP}",
