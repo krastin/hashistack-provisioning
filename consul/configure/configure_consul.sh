@@ -40,7 +40,7 @@ EOF
 fi
 
 # Populate other node's IPs to retry_join
-if [ ! -z "$RETRYIPS"]; then
+if [ ! -z "$RETRYIPS" ]; then
   sudo cat <<EOF >/etc/consul.d/retry_join.json
 {
   "retry_join": ${RETRYIPS}
