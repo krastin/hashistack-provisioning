@@ -7,6 +7,20 @@ if [ ! "$VERSION" ] ; then
   VERSION=`curl -sL https://releases.hashicorp.com/${PRODUCT}/index.json | jq -r '.versions[].version' | sort -V | egrep -v 'ent|beta|rc|alpha' | tail -1`
 fi
 
+if id "consul" &>/dev/null; then
+  echo 'Consul user found, moving on'
+else
+  # Add no-password sudo config for new consul user
+  sudo useradd -m consul 
+  sudo cat <<EOF > /etc/sudoers.d/consul
+%consul ALL=NOPASSWD:ALL
+EOF
+  sudo chmod 0440 /etc/sudoers.d/consul
+
+  # Add consul to sudo group
+  usermod -a -G sudo consul
+fi
+
 # Working directory
 cd /tmp
 
