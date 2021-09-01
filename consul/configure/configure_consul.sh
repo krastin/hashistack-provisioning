@@ -72,6 +72,7 @@ sudo chown -R consul /etc/consul.d
 
 # enable and start consul
 sudo systemctl enable consul
+sudo systemctl stop consul
 sudo systemctl start consul
 
 sleep 3s
