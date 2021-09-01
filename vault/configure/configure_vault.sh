@@ -16,7 +16,7 @@ ui = true
 storage "consul" {
   address = "127.0.0.1:8500"
   path    = "vault"
-  #token   = "${CONSUL_TOKEN}
+  #token   = "${CONSUL_TOKEN}"
 }
 
 listener "tcp" {
@@ -32,7 +32,7 @@ fi
 
 # configure the local IP
 if [ ! -z "$LOCAL_IP" ]; then
-  echo Configuring Vault HA node address as $local_ip
+  echo Configuring Vault HA node address as $LOCAL_IP
   cat <<EOF >>/etc/vault.d/vault.hcl
 cluster_addr = "https://${LOCAL_IP}:8201"
 api_addr = "http://${LOCAL_IP}:8200"
