@@ -5,6 +5,7 @@
 # KMS_KEY
 # VAULT_LICENSE
 # CONSUL_TOKEN
+# LOCAL_IP
 
 sudo chown -R vault /etc/vault.d
 
@@ -29,15 +30,23 @@ if [ ! -z "$CONSUL_TOKEN" ]; then
   sed -i 's/#token/token/' /etc/vault.d/vault.hcl
 fi
 
-# Get and configure the local IP
-local_ip=$(ip add | grep "inet " | grep -v '127.0.0.1' | awk '{ print $2 }' | awk -F'/' '{ print $1 }')
-if [ ! -z "$local_ip" ]
-then
+# configure the local IP
+if [ ! -z "$CONSUL_TOKEN" ]; then
   echo Configuring Vault HA node address as $local_ip
   cat <<EOF >>/etc/vault.d/vault.hcl
+cluster_addr = "https://${LOCAL_IP}:8201"
+api_addr = "http://${LOCAL_IP}:8200"
+EOF
+else
+  # get the first local IP which is not localhost
+  local_ip=$(ip add | grep "inet " | grep -v -m1 '127.0.0.1' | awk '{ print $2 }' | awk -F'/' '{ print $1 }')
+  if [ ! -z "$local_ip" ]; then
+    echo Configuring Vault HA node address as $local_ip
+    cat <<EOF >>/etc/vault.d/vault.hcl
 cluster_addr = "https://${local_ip}:8201"
 api_addr = "http://${local_ip}:8200"
 EOF
+  fi
 fi
 
 if [ ! -z "$AWS_REGION" ] && [ ! -z "$KMS_KEY" ]
