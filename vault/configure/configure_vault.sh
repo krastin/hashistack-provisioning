@@ -31,7 +31,7 @@ if [ ! -z "$CONSUL_TOKEN" ]; then
 fi
 
 # configure the local IP
-if [ ! -z "$CONSUL_TOKEN" ]; then
+if [ ! -z "$LOCAL_IP" ]; then
   echo Configuring Vault HA node address as $local_ip
   cat <<EOF >>/etc/vault.d/vault.hcl
 cluster_addr = "https://${LOCAL_IP}:8201"
