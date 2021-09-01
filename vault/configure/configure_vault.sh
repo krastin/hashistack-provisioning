@@ -60,6 +60,7 @@ EOF
 
 
 sudo systemctl enable vault
+sudo systemctl stop vault
 sudo systemctl start vault
 
 sleep 5s
